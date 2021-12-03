@@ -1,0 +1,30 @@
+name: 'Action to check issues'
+description: '检查未处理的 issues, 长时间没处理的 和 近期没处理的'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+
+inputs:
+  hook:
+    description: |
+      发送通知的企业微信 web hook
+    required: true
+    default: ''
+  repo:
+    description: |
+      仓库，默认当前仓库
+    required: false
+    default: ''
+  type:
+    description: 检查类型, recent, inactive, all
+    required: false
+    default: 'all'
+  inactive:
+    description: 不活跃天数
+    required: false
+    default: 30
+  rencent:
+    description: 最近天数
+    required: false
+    default: 2
