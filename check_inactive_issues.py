@@ -83,7 +83,7 @@ def send_inactive_issues_alert_msg():
         send_wechat_msg(msg)
         return
     msg = textwrap.dedent("""
-    ### **[{repo}]** {days} 天不活跃 issues {count} 个, 赶紧去看看吧
+    ### **[{repo}]** {days} 天不活跃 issues 有 {count} 个, 赶紧去看看吧
     ---
     """).format(**kwargs)
     msg += format_issues(issues)
@@ -117,11 +117,11 @@ def send_recent_issue_alert_msg():
     issues = get_recent_unhandled_issues()
     kwargs = dict(recent=args.recent, repo=args.repo, count=len(issues))
     if len(issues) == 0:
-        msg = '### **[{repo}]** {recent} 内未处理 issues 居然是 {count}, 有点厉害啊'.format(**kwargs)
+        msg = '### **[{repo}]** {recent} 天内未处理 issues 居然是 {count}, 有点厉害啊'.format(**kwargs)
         send_wechat_msg(msg)
         return
     msg = textwrap.dedent("""
-    ### **[{repo}]** {recent} 内未处理 issues {count} 个, 赶紧去看看吧
+    ### **[{repo}]** {recent} 天内未处理 issues 有 {count} 个, 赶紧去看看吧
     _
     """).format(**kwargs)
     msg += format_issues(issues)
