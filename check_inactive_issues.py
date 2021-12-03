@@ -76,7 +76,7 @@ def send_inactive_issues_alert_msg():
     inactive_day = now - datetime.timedelta(days=args.inactive)
     issues = get_issues()
     issues = [i for i in issues if i.updated_at < inactive_day]
-    kwargs = dict(repo=args.repo, days=args.days, count=len(issues))
+    kwargs = dict(repo=args.repo, days=args.inactive, count=len(issues))
 
     if len(issues) == 0:
         msg = '### **[{repo}]** {days} 天不活跃 issues 居然是 {count}，太厉害了'.format(**kwargs)
