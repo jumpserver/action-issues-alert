@@ -1,7 +1,5 @@
 #!/bin/bash -eix
 
-env
-
 WEB_HOOK=${INPUT_HOOK}
 REPO=${INPUT_REPO-$GITHUB_REPOSITORY}
 TYPE=${INPUT_TYPE-all}
