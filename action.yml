@@ -17,7 +17,7 @@ inputs:
     required: false
     default: ''
   type:
-    description: 检查类型, recent, inactive, all
+    description: 检查类型, recent, inactive, untimely, all
     required: false
     default: 'all'
   inactive:

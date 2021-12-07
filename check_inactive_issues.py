@@ -15,7 +15,8 @@ parser.add_argument('repo', type=str, help='项目仓库, 如: jumpserver/jumpse
 parser.add_argument('--hook', type=str, help='企业微信群机器人 web hook 地址')
 parser.add_argument('--inactive', type=int, default=30, help='不活跃天数')
 parser.add_argument('--recent', type=int, default=2, help='最近天数')
-parser.add_argument('--type', type=str, choices=['inactive', 'recent', 'all'])
+parser.add_argument('--untimely', type=int, default=7, help='不及时天数')
+parser.add_argument('--type', type=str, choices=['inactive', 'recent', 'untimely', 'all'])
 args = parser.parse_args()
 
 now = datetime.datetime.now()
@@ -35,7 +36,7 @@ def get_issues(since=None, **kwargs):
     t = time.time()
     issues = [i for i in issues if not i.pull_request]
     using = int(time.time() - t)
-    print("获取 issues 完成, 用时 {}s".format(using))
+    print("获取 issues 完成, 总数 {}, 用时 {}s".format(len(issues), using))
     return issues
 
 
@@ -93,6 +94,23 @@ def send_inactive_issues_alert_msg():
     send_wechat_msg(msg)
 
 
+def send_untimely_issues():
+    issues = get_issues(labels=['状态:待处理'])
+    kwargs = dict(untimely=args.untimely, repo=args.repo, count=len(issues))
+    if len(issues) == 0:
+        msg = '### **[{repo}]** 超过 {untimely} 天未处理 issues 居然是 {count}, 有点牛皮了'.format(**kwargs)
+        send_wechat_msg(msg)
+        return
+    msg = textwrap.dedent("""
+        ### **[{repo}]** 超过 {untimely} 天未处理 issues 有 {count} 个, 赶紧去关闭一下吧
+        _
+        """).format(**kwargs)
+    msg += format_issues(issues)
+    url = 'https://github.com/{}/issues?q=is:issue+is:open+label:状态:待处理'.format(args.repo)
+    msg += '\n[...查看更多]({})'.format(url)
+    send_wechat_msg(msg)
+
+
 def get_recent_unhandled_issues():
     recent_day = now - datetime.timedelta(days=args.recent)
     latest_issues = get_issues(since=recent_day)
@@ -136,6 +154,8 @@ def main():
         send_inactive_issues_alert_msg()
     elif tp == 'recent':
         send_recent_issue_alert_msg()
+    elif tp == 'untimely':
+        send_untimely_issues()
     else:
         send_recent_issue_alert_msg()
         send_inactive_issues_alert_msg()

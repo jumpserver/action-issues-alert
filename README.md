@@ -8,7 +8,7 @@
 **Required** 发送通知的 企业微信群 web hook 地址
 
 ## `type`
-**Optional** 检查的类型 recent, inactive, all
+**Optional** 检查的类型 recent, inactive, untimely, all
 
 ## `repo`
 **Optional** 检查的仓库地址，默认 当前仓库
@@ -18,6 +18,9 @@
 
 ## `recent`
 **Optional** 近一段时间指天数
+
+## `untimely`
+**Optional** 不及时处理的天数
 
 
 ## Example usage
