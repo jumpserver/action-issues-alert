@@ -96,6 +96,8 @@ def send_inactive_issues_alert_msg():
 
 def send_untimely_issues():
     issues = get_issues(labels=['状态:待处理'])
+    untimely_day = datetime.datetime.now() - datetime.timedelta(days=args.untimely)
+    issues = [i for i in issues if i.updated_at < untimely_day]
     kwargs = dict(untimely=args.untimely, repo=args.repo, count=len(issues))
     if len(issues) == 0:
         msg = '### **[{repo}]** 超过 {untimely} 天未处理 issues 居然是 {count}, 有点牛皮了'.format(**kwargs)
