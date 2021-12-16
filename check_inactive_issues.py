@@ -115,22 +115,8 @@ def send_untimely_issues():
 
 def get_recent_unhandled_issues():
     recent_day = now - datetime.timedelta(days=args.recent)
-    latest_issues = get_issues(since=recent_day)
-    issues = []
-
-    for i in latest_issues:
-        if i.comments == 0:
-            issues.append(i)
-            continue
-        comments = list(i.get_comments())
-        # 可能删掉了
-        if not comments:
-            issues.append(i)
-            continue
-        # issue 用户和最后一次回复 是一个人, 代表需要处理
-        if comments[-1].user.id == i.user.id:
-            issues.append(i)
-    return issues
+    latest_issues = get_issues(since=recent_day, labels=['状态:待处理'])
+    return latest_issues
 
 
 def send_recent_issue_alert_msg():
