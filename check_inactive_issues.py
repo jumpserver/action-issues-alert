@@ -95,7 +95,7 @@ def send_inactive_issues_alert_msg():
 
 
 def send_untimely_issues():
-    issues = get_issues(labels=['状态:待处理'])
+    issues = get_issues(labels=['状态:待处理']) + get_issues(labels=['🔔 Pending processing'])
     untimely_day = datetime.datetime.now() - datetime.timedelta(days=args.untimely)
     issues = [i for i in issues if i.updated_at < untimely_day]
     kwargs = dict(untimely=args.untimely, repo=args.repo, count=len(issues))
@@ -109,13 +109,17 @@ def send_untimely_issues():
         """).format(**kwargs)
     msg += format_issues(issues)
     url = 'https://github.com/{}/issues?q=is:issue+is:open+label:状态:待处理'.format(args.repo)
+    url_new = 'https://github.com/{}/issues?q=is:issue+is:open+label:"🔔+Pending+processing"'.format(args.repo)
     msg += '\n[...查看更多]({})'.format(url)
+    msg += '\n[...查看更多(New)]({})'.format(url_new)
     send_wechat_msg(msg)
 
 
 def get_recent_unhandled_issues():
     recent_day = now - datetime.timedelta(days=args.recent)
-    latest_issues = get_issues(since=recent_day, labels=['状态:待处理'])
+    latest_issues1 = get_issues(since=recent_day, labels=['状态:待处理'])
+    latest_issues2 = get_issues(since=recent_day, labels=['🔔 Pending processing'])
+    latest_issues = latest_issues1 + latest_issues2
     return latest_issues
 
 
