@@ -15,7 +15,7 @@ parser.add_argument('repo', type=str, help='项目仓库, 如: jumpserver/jumpse
 parser.add_argument('--hook', type=str, help='企业微信群机器人 web hook 地址')
 parser.add_argument('--inactive', type=int, default=30, help='不活跃天数')
 parser.add_argument('--recent', type=int, default=2, help='最近天数')
-parser.add_argument('--untimely', type=int, default=7, help='不及时天数')
+parser.add_argument('--untimely', type=int, default=0, help='不及时天数')
 parser.add_argument('--type', type=str, choices=['inactive', 'recent', 'untimely', 'all'])
 args = parser.parse_args()
 
