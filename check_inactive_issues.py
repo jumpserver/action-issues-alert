@@ -95,7 +95,9 @@ def send_inactive_issues_alert_msg():
 
 
 def send_untimely_issues():
-    issues = get_issues(labels=['状态:待处理']) + get_issues(labels=['🔔 Pending processing'])
+    issues_old = get_issues(labels=['状态:待处理']) 
+    issues_new = get_issues(labels=['🔔 Pending processing'])
+    issues = issues_old + issues_new
     untimely_day = datetime.datetime.now() - datetime.timedelta(days=args.untimely)
     issues = [i for i in issues if i.updated_at < untimely_day]
     kwargs = dict(untimely=args.untimely, repo=args.repo, count=len(issues))
@@ -108,10 +110,12 @@ def send_untimely_issues():
         _
         """).format(**kwargs)
     msg += format_issues(issues)
-    url = 'https://github.com/{}/issues?q=is:issue+is:open+label:状态:待处理'.format(args.repo)
-    url_new = 'https://github.com/{}/issues?q=is:issue+is:open+label:"🔔+Pending+processing"'.format(args.repo)
-    msg += '\n[...查看更多]({})'.format(url)
-    msg += '\n[...查看更多(New)]({})'.format(url_new)
+    if issues_old:
+        url = 'https://github.com/{}/issues?q=is:issue+is:open+label:状态:待处理'.format(args.repo)
+        msg += '\n[...查看更多]({})'.format(url)
+    if issues_new:
+        url_new = 'https://github.com/{}/issues?q=is:issue+is:open+label:"🔔+Pending+processing"'.format(args.repo)
+        msg += '\n[...查看更多(New)]({})'.format(url_new)
     send_wechat_msg(msg)
 
 
